@@ -4,11 +4,10 @@ import { stat } from "fs";
 import { RequestStatus, TIngredient, TOrder, TOrdersData, TUser } from "@utils-types";
 import { getUserThunk } from "../thunks/getUserThunk";
 import { userRegisterThunk } from "../thunks/userRegisterThunk";
-import { deleteCookie, setCookie } from "../..//utils/cookie";
+import { deleteCookie, setCookie } from "../../utils/cookie";
 import { userLoginThunk } from "../thunks/userLoginThunk";
 import { userLogoutThunk } from "../thunks/userLogoutThunk";
 import { userUpdateThunk } from "../thunks/userUpdateThunk";
-import { userLoginAndCreateOrderThunk } from "../thunks/userLoginAndCreateOrderThunk";
 
 type TUserState = {
   user: TUser | null,
@@ -44,10 +43,8 @@ export const userSlice = createSlice({
       })
       .addCase(getUserThunk.fulfilled, (state, action) => {
         state.requestStatus = RequestStatus.Success;
-        if (action.payload.success) {
-          state.user = action.payload.user;
-          state.userChecked = true;
-        } 
+        state.user = action.payload;
+        state.userChecked = true;
       })
 
       .addCase(userRegisterThunk.pending, (state) => {
@@ -58,11 +55,7 @@ export const userSlice = createSlice({
       })
       .addCase(userRegisterThunk.fulfilled, (state, action) => {
         state.requestStatus = RequestStatus.Success;
-        if (action.payload.success) {
-          setCookie('accessToken', action.payload.accessToken);
-          localStorage.setItem('refreshToken', action.payload.refreshToken);
-          state.user = action.payload.user;
-        }
+        state.user = action.payload;
       })
 
       .addCase(userLoginThunk.pending, (state) => {
@@ -73,30 +66,8 @@ export const userSlice = createSlice({
       })
       .addCase(userLoginThunk.fulfilled, (state, action) => {
         state.requestStatus = RequestStatus.Success;
-        if (action.payload.success) {
-          setCookie('accessToken', action.payload.accessToken);
-          localStorage.setItem('refreshToken', action.payload.refreshToken);
-          state.user = action.payload.user;
-        }
+        state.user = action.payload;
       })
-
-      // .addCase(userLoginAndCreateOrderThunk.pending, (state) => {
-      //   state.requestStatus = RequestStatus.Loading;
-      // })
-      // .addCase(userLoginAndCreateOrderThunk.rejected, (state) => {
-      //   state.requestStatus = RequestStatus.Failed;
-      // })
-      // .addCase(userLoginAndCreateOrderThunk.fulfilled, (state, action) => {
-      //   state.requestStatus = RequestStatus.Success;
-      //   if (action.payload.login.success) {
-      //     setCookie('accessToken', action.payload.login.accessToken);
-      //     localStorage.setItem('refreshToken', action.payload.login.refreshToken);
-      //     state.user = action.payload.login.user;
-      //   }
-      //   if (action.payload.order.success) {
-          
-      //   }
-      // })
 
       .addCase(userLogoutThunk.pending, (state) => {
         state.requestStatus = RequestStatus.Loading;
@@ -106,11 +77,7 @@ export const userSlice = createSlice({
       })
       .addCase(userLogoutThunk.fulfilled, (state, action) => {
         state.requestStatus = RequestStatus.Success;
-        if (action.payload.success) {
-          deleteCookie('accessToken');
-          localStorage.removeItem('refreshToken');
-          state.user = null;
-        }
+        state.user = null;
       })
 
       .addCase(userUpdateThunk.pending, (state) => {
@@ -121,12 +88,10 @@ export const userSlice = createSlice({
       })
       .addCase(userUpdateThunk.fulfilled, (state, action) => {
         state.requestStatus = RequestStatus.Success;
-        if (action.payload.success) {
-          state.user = action.payload.user;
-        } 
+        state.user = action.payload;
       })
   }
 });
 
-export const { setUserCheck } = userSlice.actions;
+export const userActions = userSlice.actions;
 export const userSelectors = userSlice.selectors;

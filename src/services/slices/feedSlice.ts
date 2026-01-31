@@ -27,13 +27,10 @@ const initialState: TFeedState = {
 export const feedSlice = createSlice({
   name: FEED_SLICE_NAME,
   initialState,
-  reducers: {
-
-  },
+  reducers: {},
   selectors: {
     getOrdersSelector: (state) => state.feed.orders,
     getUserOrdersSelect: (state) => state.ordersAuth,
-    // getOrderByIdSelector: (state, id) => state.feed.orders.find(item => item.number === +id) ?? null,
     getFeedSelector: (state) => state.feed,
     isLoadingFeedSelector: (state) => state.requestStatus,
     isLoadingUserOrdersSelector: (state) => state.requestUserOrdersStatus,
@@ -48,9 +45,7 @@ export const feedSlice = createSlice({
       })
       .addCase(getPublicOrdersThunk.fulfilled, (state, action) => {
         state.requestStatus = RequestStatus.Success;
-        if (action.payload.success) {
-          state.feed = action.payload;
-        }
+        state.feed = action.payload;
       })
       .addCase(userOrdersThunk.pending, (state) => {
         state.requestUserOrdersStatus = RequestStatus.Loading
@@ -65,5 +60,4 @@ export const feedSlice = createSlice({
   }
 });
 
-export const {  } = feedSlice.actions;
 export const feedSelectors = feedSlice.selectors;

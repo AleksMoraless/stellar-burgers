@@ -52,9 +52,7 @@ export const orderSlice = createSlice({
       .addCase(createOrderThunk.fulfilled, (state, action) => {
         state.requestStatus = RequestStatus.Success;
         state.newOrderRequest = false;
-        if (action.payload.success) {
-          state.newOrder = action.payload.order;
-        }
+        state.newOrder = action.payload.order;
       })
 
       .addCase(fetchOrderByNumberThunk.pending, (state) => {
@@ -68,9 +66,7 @@ export const orderSlice = createSlice({
       .addCase(fetchOrderByNumberThunk.fulfilled, (state, action) => {
         state.currentOrderLoading = false;
         state.requestStatus = RequestStatus.Success;
-        if (action.payload.success) {
-          state.currentOrder = action.payload.orders[0];
-        }
+        state.currentOrder = action.payload[0];
       })
   }
 });

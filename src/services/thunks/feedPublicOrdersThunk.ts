@@ -6,7 +6,11 @@ export const getPublicOrdersThunk = createAsyncThunk(
   `${FEED_SLICE_NAME}/getPublic`,
   async (_, { rejectWithValue }) => {
     try {
-      return await getFeedsApi();
+      const publicOrdersRespond = await getFeedsApi();
+      if (!publicOrdersRespond.success) {
+        return rejectWithValue('Не удалось получить данные :(');
+      }
+      return publicOrdersRespond;
     } 
     catch (error: unknown) {
       if (error instanceof Error) return rejectWithValue(error.message);

@@ -6,7 +6,12 @@ export const getUserThunk = createAsyncThunk(
   `${USER_SLICE_NAME}/getUser`,
   async (_, { rejectWithValue }) => {
     try {
-        return await getUserApi();
+        const userData = await getUserApi();
+
+        if (!userData.success) {
+          return rejectWithValue('Не удалось получить пользователя :(');
+        }
+        return userData.user;
     } 
     catch (error: unknown) {
       if (error instanceof Error) return rejectWithValue(error.message);

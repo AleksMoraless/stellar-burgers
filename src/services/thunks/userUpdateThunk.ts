@@ -6,8 +6,12 @@ export const userUpdateThunk = createAsyncThunk(
   `${FEED_SLICE_NAME}/userUpdate`,
   async (data: TRegisterData, { rejectWithValue }) => {
     try {
-      return await updateUserApi(data);
-    } 
+      const userUpdateRespond = await updateUserApi(data);
+      if (!userUpdateRespond.success) {
+        return rejectWithValue('Не удалось получить данные :(');
+      }
+      return userUpdateRespond.user;
+    }
     catch (error: unknown) {
       if (error instanceof Error) return rejectWithValue(error.message);
       else return rejectWithValue('Не удалось получить данные :(');

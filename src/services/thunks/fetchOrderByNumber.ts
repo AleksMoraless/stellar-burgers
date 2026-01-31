@@ -6,7 +6,11 @@ export const fetchOrderByNumberThunk = createAsyncThunk(
   `${ORDER_SLICE_NAME}/fetchOrderByNumber`,
   async (data: number, { rejectWithValue }) => {
     try {
-        return await getOrderByNumberApi(Number(data));
+        const orderByNumRespond = await getOrderByNumberApi(Number(data));
+        if (!orderByNumRespond.success) {
+          return rejectWithValue('Не удалось сделать заказ :(');
+        } 
+        return orderByNumRespond.orders;
     } 
     catch (error: unknown) {
       if (error instanceof Error) return rejectWithValue(error.message);
