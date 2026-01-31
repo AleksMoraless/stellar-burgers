@@ -4,7 +4,9 @@ import { TIngredient, TOrder, TOrdersData, TUser } from './types';
 const URL = process.env.BURGER_API_URL;
 
 const checkResponse = <T>(res: Response): Promise<T> =>
-  res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+  res.ok 
+  ? res.json() 
+  : res.json().then((err) => Promise.reject(err));
 
 type TServerResponse<T> = {
   success: boolean;
@@ -73,7 +75,8 @@ type TOrdersResponse = TServerResponse<{
 
 export const getIngredientsApi = () =>
   fetch(`${URL}/ingredients`)
-    .then((res) => checkResponse<TIngredientsResponse>(res))
+    .then((res) => {
+      return checkResponse<TIngredientsResponse>(res)})
     .then((data) => {
       if (data?.success) return data.data;
       return Promise.reject(data);
@@ -99,7 +102,7 @@ export const getOrdersApi = () =>
     return Promise.reject(data);
   });
 
-type TNewOrderResponse = TServerResponse<{
+export type TNewOrderResponse = TServerResponse<{
   order: TOrder;
   name: string;
 }>;
@@ -137,12 +140,13 @@ export type TRegisterData = {
   password: string;
 };
 
-type TAuthResponse = TServerResponse<{
+export type TAuthResponse = TServerResponse<{
   refreshToken: string;
   accessToken: string;
   user: TUser;
 }>;
 
+//USED
 export const registerUserApi = (data: TRegisterData) =>
   fetch(`${URL}/auth/register`, {
     method: 'POST',
@@ -162,6 +166,7 @@ export type TLoginData = {
   password: string;
 };
 
+//USED
 export const loginUserApi = (data: TLoginData) =>
   fetch(`${URL}/auth/login`, {
     method: 'POST',
@@ -176,6 +181,7 @@ export const loginUserApi = (data: TLoginData) =>
       return Promise.reject(data);
     });
 
+//USED
 export const forgotPasswordApi = (data: { email: string }) =>
   fetch(`${URL}/password-reset`, {
     method: 'POST',
@@ -190,6 +196,7 @@ export const forgotPasswordApi = (data: { email: string }) =>
       return Promise.reject(data);
     });
 
+//USED
 export const resetPasswordApi = (data: { password: string; token: string }) =>
   fetch(`${URL}/password-reset/reset`, {
     method: 'POST',
@@ -206,6 +213,7 @@ export const resetPasswordApi = (data: { password: string; token: string }) =>
 
 type TUserResponse = TServerResponse<{ user: TUser }>;
 
+//USED
 export const getUserApi = () =>
   fetchWithRefresh<TUserResponse>(`${URL}/auth/user`, {
     headers: {
@@ -213,6 +221,7 @@ export const getUserApi = () =>
     } as HeadersInit
   });
 
+  //USED
 export const updateUserApi = (user: Partial<TRegisterData>) =>
   fetchWithRefresh<TUserResponse>(`${URL}/auth/user`, {
     method: 'PATCH',
@@ -223,6 +232,7 @@ export const updateUserApi = (user: Partial<TRegisterData>) =>
     body: JSON.stringify(user)
   });
 
+  //USED
 export const logoutApi = () =>
   fetch(`${URL}/auth/logout`, {
     method: 'POST',

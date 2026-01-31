@@ -1,5 +1,5 @@
 .wrap {
-  margin: 0 auto;
+  margin: auto;
   width: 640px;
 }
 .number {
@@ -45,7 +45,11 @@
   justify-content: flex-start;
   align-items: center;
 }
-
+.num_order {
+  display: block;
+  text-align: center;
+  inline-size: 100%;
+}
 .quantity {
   margin-left: auto;
 }
