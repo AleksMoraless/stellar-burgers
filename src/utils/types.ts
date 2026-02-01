@@ -12,6 +12,11 @@ export type TIngredient = {
   image_mobile: string;
 };
 
+export type TBurgerBuilder = {
+  bun: TIngredient | null,
+  ingredients: TConstructorIngredient[],
+};
+
 export type TConstructorIngredient = TIngredient & {
   id: string;
 };
@@ -30,6 +35,8 @@ export type TOrdersData = {
   orders: TOrder[];
   total: number;
   totalToday: number;
+  isLoading?: boolean;
+  error?: string | null;
 };
 
 export type TUser = {
@@ -38,3 +45,10 @@ export type TUser = {
 };
 
 export type TTabMode = 'bun' | 'sauce' | 'main';
+
+export enum RequestStatus {
+  Idle= 'Idle',
+  Loading = 'Loading',
+  Success = 'Success', 
+  Failed = 'Failed'
+}

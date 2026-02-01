@@ -1,14 +1,24 @@
 import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { TTabMode } from '@utils-types';
+import { RequestStatus, TTabMode } from '@utils-types';
+import { Preloader } from '@ui';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import { useSelector, useDispatch } from '../../services/store';
+import { INGREDIENTS_SLICE_NAME } from '../../services/slices/sliceNames';
+import { Failure } from '../ui/failure-request';
+import { ingredientsSelectors } from '../../services/slices/ingridientsSlice';
 
 export const BurgerIngredients: FC = () => {
+  const isLoading = useSelector(ingredientsSelectors.isLoadingSelector);
+  const ingredients = useSelector(ingredientsSelectors.getIngredientsSelector);
+  const error = useSelector(ingredientsSelectors.getError);
+  const dispatch = useDispatch();
+
   /** TODO: взять переменные из стора */
-  const buns = [];
-  const mains = [];
-  const sauces = [];
+  const buns = ingredients.filter(item => item.type === 'bun');
+  const mains = ingredients.filter(item => item.type === 'main');
+  const sauces = ingredients.filter(item => item.type === 'sauce');
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
@@ -47,7 +57,17 @@ export const BurgerIngredients: FC = () => {
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  return null;
+  if (isLoading === RequestStatus.Loading) {
+    return <Preloader />;
+  }
+
+  if (isLoading === RequestStatus.Failed && error) {
+    return <Failure message = {`Запрос завершился с ошибкой: ${error}`}/>
+  }
+
+  if (isLoading === RequestStatus.Success && ingredients.length === 0) {
+    return <Failure message = 'No ingredients'/>
+  }
 
   return (
     <BurgerIngredientsUI
