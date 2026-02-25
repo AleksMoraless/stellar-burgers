@@ -9,7 +9,7 @@ import { userLoginThunk } from "../thunks/userLoginThunk";
 import { userLogoutThunk } from "../thunks/userLogoutThunk";
 import { userUpdateThunk } from "../thunks/userUpdateThunk";
 
-type TUserState = {
+export type TUserState = {
   user: TUser | null,
   userChecked: boolean,
   requestStatus: RequestStatus;
@@ -95,3 +95,5 @@ export const userSlice = createSlice({
 
 export const userActions = userSlice.actions;
 export const userSelectors = userSlice.selectors;
+
+export default userSlice.reducer;

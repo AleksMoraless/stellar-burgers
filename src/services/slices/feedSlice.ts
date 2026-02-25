@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FEED_SLICE_NAME } from "./sliceNames";
-import { stat } from "fs";
 import { RequestStatus, TIngredient, TOrder, TOrdersData } from "@utils-types";
 import { getPublicOrdersThunk } from "../thunks/feedPublicOrdersThunk";
 import { userOrdersThunk } from "../thunks/feedUserOrdersThunk";
@@ -15,7 +14,6 @@ type TFeedState = {
 const initialState: TFeedState = {
   feed: {
     orders: [],
-    // success: false,
     total: 0, 
     totalToday: 0,
   },
@@ -61,3 +59,5 @@ export const feedSlice = createSlice({
 });
 
 export const feedSelectors = feedSlice.selectors;
+
+export default feedSlice.reducer;

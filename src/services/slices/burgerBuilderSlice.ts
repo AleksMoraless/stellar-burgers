@@ -55,3 +55,5 @@ export const burgerBuilderSlice = createSlice({
 
 export const constructorActions = burgerBuilderSlice.actions;
 export const burgerBuilderSelectors = burgerBuilderSlice.selectors;
+
+export default burgerBuilderSlice.reducer;

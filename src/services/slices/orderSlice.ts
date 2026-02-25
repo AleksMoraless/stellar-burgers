@@ -17,10 +17,8 @@ type TOrderState = {
 const initialState: TOrderState = {
   newOrder: null,
   newOrderRequest: false,
-  
   currentOrder: null,
   currentOrderLoading: false,
-  
   requestStatus: RequestStatus.Idle
 }
 
@@ -73,3 +71,5 @@ export const orderSlice = createSlice({
 
 export const orderActions = orderSlice.actions;
 export const orderSelectors = orderSlice.selectors;
+
+export default orderSlice.reducer;

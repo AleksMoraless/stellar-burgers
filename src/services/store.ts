@@ -11,7 +11,7 @@ import { feedSlice } from './slices/feedSlice';
 import { userSlice } from './slices/userSlice';
 import { orderSlice } from './slices/orderSlice';
 
-const rootReducer = combineSlices(
+export const rootReducer = combineSlices(
   ingridientsSlice, 
   burgerBuilderSlice, 
   feedSlice, 
@@ -23,6 +23,7 @@ const store = configureStore({
   reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production'
 });
+
 
 export type RootState = ReturnType<typeof rootReducer>;
 
