@@ -3,7 +3,7 @@ import { BURGER_BUILDER_SLICE_NAME, INGREDIENTS_SLICE_NAME } from "./sliceNames"
 import { TConstructorIngredient, TIngredient, TOrder } from "@utils-types";
 import { nanoid } from "@reduxjs/toolkit";
 
-type TBurgerBuilderState = {
+export type TBurgerBuilderState = {
   data: {
     bun: null | TIngredient,
     ingredients: TConstructorIngredient[]
@@ -55,3 +55,5 @@ export const burgerBuilderSlice = createSlice({
 
 export const constructorActions = burgerBuilderSlice.actions;
 export const burgerBuilderSelectors = burgerBuilderSlice.selectors;
+
+export default burgerBuilderSlice.reducer;
