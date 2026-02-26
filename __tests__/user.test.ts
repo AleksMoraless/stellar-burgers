@@ -6,7 +6,9 @@ import { userLoginThunk } from '../src/services/thunks/userLoginThunk';
 import { userLogoutThunk } from '../src/services/thunks/userLogoutThunk';
 import { userRegisterThunk } from '../src/services/thunks/userRegisterThunk';
 import { userUpdateThunk } from '../src/services/thunks/userUpdateThunk';
-import { RequestStatus, TUser } from "../src/utils/types";
+import { TUserResponse, TAuthResponse, TServerResponse } from "../src/utils/burger-api";
+import { RequestStatus } from "../src/utils/types";
+import { mockUserData, serverLogoutResponse, mockUserRegisterData, mockUserDataMutation } from './mocks';
 
 jest.mock('../src/utils/cookie', () => ({
   getCookie: jest.fn(),
@@ -36,8 +38,6 @@ Object.defineProperty(global, 'localStorage', {
 });
 
 import { getCookie, setCookie, deleteCookie } from '../src/utils/cookie';
-
-const mockUserData = { "success": true, "user": { "email": "sanekm1901@mail.ru", "name": "AlexMoraless" } };
 
 describe('Тесты асинхронного экшена getUserThunk', () => {
   beforeEach(() => {
@@ -93,7 +93,7 @@ describe('Тесты асинхронного экшена getUserThunk', () => 
   })
 
   test('Получение данных пользователя - проверка pending', async () => {
-    let resolvePromise: (value: any) => void;
+    let resolvePromise: (value: TUserResponse) => void;
     const promise = new Promise((resolve) => {
       resolvePromise = resolve;
     });
@@ -115,7 +115,7 @@ describe('Тесты асинхронного экшена getUserThunk', () => 
     let state = store.getState();
     expect(state.user.requestStatus).toBe("Loading");
 
-    resolvePromise!({});
+    resolvePromise!(mockUserData);
     await dispatchPromise;
 
     state = store.getState();
@@ -123,16 +123,6 @@ describe('Тесты асинхронного экшена getUserThunk', () => 
     expect(state.user.user).toEqual(mockUserData.user);
   });
 })
-
-
-const mockUserRegisterData = {
-  "refreshToken": "test-token",
-  "accessToken": "test-access-token",
-  "user": {
-    "name": 'Alex John',
-    "email": 'test@mail.ru'
-  },
-};
 
 describe('Тесты асинхронного экшена userRegisterThunk', () => {
   beforeEach(() => {
@@ -152,10 +142,7 @@ describe('Тесты асинхронного экшена userRegisterThunk', (
     global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-          user: mockUserRegisterData,
-        }),
+        json: () => Promise.resolve(mockUserRegisterData),
       })
     ) as jest.Mock
 
@@ -167,7 +154,7 @@ describe('Тесты асинхронного экшена userRegisterThunk', (
 
     const state = store.getState();
 
-    expect(state.user.user).toEqual(mockUserRegisterData);
+    expect(state.user.user).toEqual(mockUserRegisterData.user);
     expect(state.user.requestStatus).toBe("Success");
 
   })
@@ -191,7 +178,7 @@ describe('Тесты асинхронного экшена userRegisterThunk', (
   })
 
   test('Регистрация пользователя - проверка pending', async () => {
-    let resolvePromise: (value: any) => void;
+    let resolvePromise: (value: TAuthResponse) => void;
     const promise = new Promise((resolve) => {
       resolvePromise = resolve;
     });
@@ -199,7 +186,7 @@ describe('Тесты асинхронного экшена userRegisterThunk', (
     global.fetch = jest.fn(() =>
       promise.then(() => ({
         ok: true,
-        json: () => Promise.resolve(mockUserData)
+        json: () => Promise.resolve(mockUserRegisterData)
       }))
     ) as jest.Mock;
 
@@ -213,21 +200,14 @@ describe('Тесты асинхронного экшена userRegisterThunk', (
     let state = store.getState();
     expect(state.user.requestStatus).toBe("Loading");
 
-    resolvePromise!({});
+    resolvePromise!(mockUserRegisterData);
     await dispatchPromise;
 
     state = store.getState();
     expect(state.user.requestStatus).toBe("Success");
-    expect(state.user.user).toEqual(mockUserData.user);
+    expect(state.user.user).toEqual(mockUserRegisterData.user);
   });
 })
-
-const mockUserLoginData = {
-  "user": {
-    "name": null,
-    "email": 'test@mail.ru'
-  },
-};
 
 describe('Тесты асинхронного экшена userLoginThunk', () => {
   beforeEach(() => {
@@ -247,12 +227,7 @@ describe('Тесты асинхронного экшена userLoginThunk', () =
     global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-          "refreshToken": "test-token",
-          "accessToken": "test-access-token",
-          user: mockUserLoginData,
-        }),
+        json: () => Promise.resolve(mockUserRegisterData),
       })
     ) as jest.Mock
 
@@ -264,7 +239,7 @@ describe('Тесты асинхронного экшена userLoginThunk', () =
 
     const state = store.getState();
 
-    expect(state.user.user).toEqual(mockUserLoginData);
+    expect(state.user.user).toEqual(mockUserRegisterData.user);
     expect(state.user.requestStatus).toBe("Success");
 
   })
@@ -288,7 +263,7 @@ describe('Тесты асинхронного экшена userLoginThunk', () =
   })
 
   test('Логирование пользователя - проверка pending', async () => {
-    let resolvePromise: (value: any) => void;
+    let resolvePromise: (value: TAuthResponse) => void;
     const promise = new Promise((resolve) => {
       resolvePromise = resolve;
     });
@@ -296,7 +271,7 @@ describe('Тесты асинхронного экшена userLoginThunk', () =
     global.fetch = jest.fn(() =>
       promise.then(() => ({
         ok: true,
-        json: () => Promise.resolve(mockUserData)
+        json: () => Promise.resolve(mockUserRegisterData)
       }))
     ) as jest.Mock;
 
@@ -310,12 +285,12 @@ describe('Тесты асинхронного экшена userLoginThunk', () =
     let state = store.getState();
     expect(state.user.requestStatus).toBe("Loading");
 
-    resolvePromise!({});
+    resolvePromise!(mockUserRegisterData);
     await dispatchPromise;
 
     state = store.getState();
     expect(state.user.requestStatus).toBe("Success");
-    expect(state.user.user).toEqual(mockUserData.user);
+    expect(state.user.user).toEqual(mockUserRegisterData.user);
   });
 })
 
@@ -337,9 +312,7 @@ describe('Тесты асинхронного экшена userLogoutThunk', () 
     global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-        }),
+        json: () => Promise.resolve(serverLogoutResponse),
       })
     ) as jest.Mock
     const userInit: TUserState = {
@@ -396,7 +369,7 @@ describe('Тесты асинхронного экшена userLogoutThunk', () 
   })
 
   test('Выход пользователя - проверка pending', async () => {
-    let resolvePromise: (value: any) => void;
+    let resolvePromise: (value: TServerResponse<object>) => void;
     const promise = new Promise((resolve) => {
       resolvePromise = resolve;
     });
@@ -404,7 +377,7 @@ describe('Тесты асинхронного экшена userLogoutThunk', () 
     global.fetch = jest.fn(() =>
       promise.then(() => ({
         ok: true,
-        json: () => Promise.resolve(mockUserData)
+        json: () => Promise.resolve(serverLogoutResponse)
       }))
     ) as jest.Mock;
 
@@ -427,7 +400,7 @@ describe('Тесты асинхронного экшена userLogoutThunk', () 
     state = store.getState();
     expect(state.user.requestStatus).toBe("Loading");
 
-    resolvePromise!({});
+    resolvePromise!(serverLogoutResponse);
     await dispatchPromise;
 
     state = store.getState();
@@ -452,20 +425,12 @@ describe('Тесты асинхронного экшена userUpdateThunk', () 
     jest.resetAllMocks();
   })
 
-  const mockUserDataMutation = {
-    name: 'Lexa Blaze',
-    email: 'lexablazer@mail.ru'
-  }
-
   test('Обновление данных пользователя - успешно', async () => {
 
     global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-          user: mockUserDataMutation
-        }),
+        json: () => Promise.resolve(mockUserDataMutation),
       })
     ) as jest.Mock
     const userInit: TUserState = {
@@ -494,7 +459,7 @@ describe('Тесты асинхронного экшена userUpdateThunk', () 
 
     state = store.getState();
 
-    expect(state.user.user).toEqual(mockUserDataMutation);
+    expect(state.user.user).toEqual(mockUserDataMutation.user);
     expect(state.user.requestStatus).toBe("Success");
   })
 
@@ -528,7 +493,7 @@ describe('Тесты асинхронного экшена userUpdateThunk', () 
   })
 
   test('Обновление данных пользователя - проверка pending', async () => {
-    let resolvePromise: (value: any) => void;
+    let resolvePromise: (value: TUserResponse) => void;
     const promise = new Promise((resolve) => {
       resolvePromise = resolve;
     });
@@ -536,10 +501,7 @@ describe('Тесты асинхронного экшена userUpdateThunk', () 
     global.fetch = jest.fn(() =>
       promise.then(() => ({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-          user: mockUserDataMutation
-        })
+        json: () => Promise.resolve(mockUserDataMutation)
       }))
     ) as jest.Mock;
 
@@ -568,11 +530,11 @@ describe('Тесты асинхронного экшена userUpdateThunk', () 
     state = store.getState();
     expect(state.user.requestStatus).toBe("Loading");
 
-    resolvePromise!({});
+    resolvePromise!(mockUserData);
     await dispatchPromise;
 
     state = store.getState();
-    expect(state.user.user).toEqual(mockUserDataMutation);
+    expect(state.user.user).toEqual(mockUserDataMutation.user);
     expect(state.user.requestStatus).toBe("Success");
   });
 })

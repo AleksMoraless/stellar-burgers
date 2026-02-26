@@ -107,6 +107,28 @@ describe('Тестирование модального окон', function() {
         
         cy.get('[data-cy=modal]').should('not.exist')
     });
+
+        it('Тестирование открытия модального окна и закрытие через Escape', function() {
+        cy.get('[data-cy=modal]').should('not.exist')
+        cy.get('[data-cy=643d69a5c3f7b9001cfa0941]')
+            .find('a')
+            .click()
+        cy.url().should('include', '/ingredients/643d69a5c3f7b9001cfa0941')
+        cy.get('[data-cy=modal]').should('exist')
+        cy.get('[data-cy=modal]')
+            .should('be.visible')
+        cy.get('[data-cy=modal]')
+            .get('[data-cy=modal-heading]')
+            .should('contain', 'Детали ингредиента')
+        cy.get('[data-cy=modal]')
+            .get('[data-cy=modal_ingredient-name]')
+            .should('contain', 'Биокотлета из марсианской Магнолии')
+
+        cy.get('body')
+            .type('{esc}')
+        
+        cy.get('[data-cy=modal]').should('not.exist')
+    });
 }); 
 
 describe('Тестирование заказа бургера', function() {

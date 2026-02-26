@@ -12,6 +12,11 @@ const config: JestConfigWithTsJest = {
   coverageDirectory: "coverage",
   coverageProvider: "v8",
   preset: 'ts-jest',
+  testEnvironment: 'node',
+  rootDir: './',
+  testMatch: [
+    '**/?(*.)test.[jt]s?(x)',  // соответствует *.test.js, *.test.ts, *.test.tsx и т.д.
+  ],
   // testEnvironment: 'jsdom',
   transform: {
           // '^.+\\.[tj]sx?$' для обработки файлов js/ts с помощью `ts-jest`
@@ -32,6 +37,10 @@ const config: JestConfigWithTsJest = {
   // moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   // roots: ['<rootDir>/src'],
   // testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '<rootDir>/src/__tests__/mocks.ts',
+  ],
 };
 
 export default config;

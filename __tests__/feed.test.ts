@@ -3,60 +3,13 @@ import feedSliceReducer from '../src/services/slices/feedSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import { getPublicOrdersThunk } from '../src/services/thunks/feedPublicOrdersThunk';
 import { userOrdersThunk } from '../src/services/thunks/feedUserOrdersThunk';
+import { TFeedsResponse } from '../src/utils/burger-api';
+import { mockFeedData, mockUserFeedData } from './mocks';
 
 jest.mock('../src/utils/cookie', () => ({
   getCookie: jest.fn()
 }));
 import { getCookie } from '../src/utils/cookie';
-
-const mockFeedData = {
-    "success": true,
-    "orders": [
-        {
-            "_id": "6923a075a64177001b320733",
-            "ingredients": [
-                "643d69a5c3f7b9001cfa093d",
-                "643d69a5c3f7b9001cfa093e",
-                "643d69a5c3f7b9001cfa093d"
-            ],
-            "status": "done",
-            "name": "Флюоресцентный люминесцентный бургер",
-            "createdAt": "2025-11-24T00:01:57.970Z",
-            "updatedAt": "2025-11-24T00:01:58.232Z",
-            "number": 95259
-        },
-        {
-            "_id": "6923a07ba64177001b320734",
-            "ingredients": [
-                "643d69a5c3f7b9001cfa093d",
-                "643d69a5c3f7b9001cfa093e",
-                "643d69a5c3f7b9001cfa093d"
-            ],
-            "status": "done",
-            "name": "Флюоресцентный люминесцентный бургер",
-            "createdAt": "2025-11-24T00:02:03.044Z",
-            "updatedAt": "2025-11-24T00:02:03.222Z",
-            "number": 95260
-        }
-    ],
-    "total": 24960,
-    "totalToday": 2
-};
-const mockUserFeedData = [
-        {
-            "_id": "6923a075a64177001b320733",
-            "ingredients": [
-                "643d69a5c3f7b9001cfa093d",
-                "643d69a5c3f7b9001cfa093e",
-                "643d69a5c3f7b9001cfa093d"
-            ],
-            "status": "done",
-            "name": "Флюоресцентный люминесцентный бургер",
-            "createdAt": "2025-11-24T00:01:57.970Z",
-            "updatedAt": "2025-11-24T00:01:58.232Z",
-            "number": 95259
-        },
-    ];
 
 describe('Тесты асинхронного экшена getPublicOrdersThunk', () => {
     test('Загрузка всех заказов - успешно', async () => {
@@ -99,7 +52,7 @@ describe('Тесты асинхронного экшена getPublicOrdersThunk'
     })
 
     test('Загрузка всех заказов - проверка pending', async () => {
-    let resolvePromise: (value: any) => void;
+    let resolvePromise: (value: TFeedsResponse) => void;
     const promise = new Promise((resolve) => {
       resolvePromise = resolve;
     });
@@ -121,7 +74,7 @@ describe('Тесты асинхронного экшена getPublicOrdersThunk'
     let state = store.getState();
     expect(state.feed.requestStatus).toBe('Loading');
 
-    resolvePromise!({});
+    resolvePromise!(mockFeedData);
     await dispatchPromise;
 
     state = store.getState();
@@ -179,7 +132,7 @@ describe('Тесты асинхронного экшена userOrdersThunk', () 
   });
 
   test('Загрузка пользовательских заказов - проверка pending', async () => {
-    let resolvePromise: (value: any) => void;
+    let resolvePromise: (value: TFeedsResponse) => void;
     const promise = new Promise((resolve) => {
       resolvePromise = resolve;
     });
@@ -203,7 +156,7 @@ describe('Тесты асинхронного экшена userOrdersThunk', () 
     let state = store.getState();
     expect(state.feed.requestUserOrdersStatus).toBe('Loading');
 
-    resolvePromise!({});
+    resolvePromise!(mockFeedData);
     await dispatchPromise;
 
     state = store.getState();

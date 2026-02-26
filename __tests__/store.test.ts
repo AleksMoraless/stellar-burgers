@@ -1,52 +1,7 @@
 import { expect, test } from '@jest/globals';
 import { rootReducer } from '../src/services/store';
 import { UnknownAction } from '@reduxjs/toolkit';
-
-const mockIngredientsInit = {
-    data: [],
-    requestStatus: 'Idle',
-    error: null
-};
-
-const mockBurgerBuilderInit = {
-    data: {
-        bun: null,
-        ingredients: []
-    }
-};
-
-const mockFeedInit = {
-    feed: {
-        orders: [],
-        total: 0,
-        totalToday: 0,
-    },
-    ordersAuth: [],
-    requestStatus: 'Idle',
-    requestUserOrdersStatus: 'Idle'
-};
-
-const mockUserInit = {
-    user: null,
-    userChecked: false,
-    requestStatus: 'Idle'
-};
-
-const mockOrderInit = {
-    newOrder: null,
-    newOrderRequest: false,
-    currentOrder: null,
-    currentOrderLoading: false,
-    requestStatus: 'Idle'
-};
-
-const expectedInitialState = {
-    ingredients: mockIngredientsInit,
-    burgerBuilder: mockBurgerBuilderInit,
-    feed: mockFeedInit,
-    user: mockUserInit,
-    order: mockOrderInit
-};
+import { mockIngredientsInit, mockBurgerBuilderInit, mockFeedInit, mockUserInit, mockOrderInit, expectedInitialState} from './mocks';
 
 describe('rootReducer инициализация', () => {
     test('rootReducer с undefined', () => {
